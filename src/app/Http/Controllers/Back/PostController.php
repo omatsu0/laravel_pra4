@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Back;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -37,7 +38,17 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $post = Post::create($request->all());
+ 
+        if ($post) {
+            return redirect()
+                ->route('back.posts.edit', $post)
+                ->withSuccess('データを登録しました。');
+        } else {
+            return redirect()
+                ->route('back.posts.create')
+                ->withError('データの登録に失敗しました。');
+        }
     }
 
     /**
