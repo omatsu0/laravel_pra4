@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePostRequest;
-use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Tag;
 
@@ -15,7 +13,7 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($tagSlug = null)
+    public function index(string $tagSlug = null)
     {
         // 公開・新しい順に表示
         $posts = Post::publicList($tagSlug);
@@ -52,10 +50,6 @@ class PostController extends Controller
      * @param  \App\Http\Requests\StorePostRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePostRequest $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.

@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 
-
 class PostController extends Controller
 {
     // タグの読み込み処理を共通にする
@@ -22,16 +21,10 @@ class PostController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    /**
      * 一覧画面
      *
      * @return \Illuminate\Contracts\View\View
      */
-
     public function index(Request $request)
     {
         $posts = Post::with('user', 'tags')->search($request)->latest('id')->paginate(20);
@@ -42,11 +35,10 @@ class PostController extends Controller
         return view('back.posts.index', compact('posts', 'search', 'users'));
     }
 
-
     /**
-     * Show the form for creating a new resource.
+     * 登録画面
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
     public function create()
     {
@@ -54,18 +46,17 @@ class PostController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 登録処理
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param PostRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(PostRequest $request)
     {
         $post = Post::create($request->all());
-
         // タグを追加
         $post->tags()->attach($request->tags);
- 
+
         if ($post) {
             return redirect()
                 ->route('back.posts.edit', $post)
@@ -78,21 +69,10 @@ class PostController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 編集画面
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Post $post
+     * @return \Illuminate\Contracts\View\View
      */
     public function edit(Post $post)
     {
@@ -100,11 +80,11 @@ class PostController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 更新処理
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param PostRequest $request
+     * @param Post $post
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(PostRequest $request, Post $post)
     {
@@ -116,17 +96,18 @@ class PostController extends Controller
         } else {
             $flash = ['error' => 'データの更新に失敗しました'];
         }
-     
+
         return redirect()
             ->route('back.posts.edit', $post)
             ->with($flash);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 削除処理
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Post $post
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
      */
     public function destroy(Post $post)
     {
@@ -138,7 +119,7 @@ class PostController extends Controller
         } else {
             $flash = ['error' => 'データの削除に失敗しました'];
         }
-     
+
         return redirect()
             ->route('back.posts.index')
             ->with($flash);
