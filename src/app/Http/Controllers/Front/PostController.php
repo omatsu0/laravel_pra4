@@ -15,7 +15,25 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        // 公開・新しい順に表示
+        $posts = Post::where('is_public', true)
+            ->orderBy('published_at', 'desc')
+            ->paginate(10);
+             
+        return view('front.posts.index', compact('posts'));
+    }
+
+    /**
+     * 詳細画面
+     *
+     * @param int $id
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function show(int $id)
+    {
+        $post = Post::where('is_public', true)->findOrFail($id);
+ 
+        return view('front.posts.show', compact('post'));
     }
 
     /**
@@ -45,10 +63,6 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
